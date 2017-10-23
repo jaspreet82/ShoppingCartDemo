@@ -12,5 +12,7 @@ namespace ShoppingCartDemo.Models
         Order Create(Customer customer);
 
         void Update(Order order);
+
+        Order Get(int orderID);
     }
 }

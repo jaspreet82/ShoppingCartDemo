@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using ShoppingCartDemo.Exceptions;
 
 namespace ShoppingCartDemo.Controllers
 {
@@ -21,14 +22,41 @@ namespace ShoppingCartDemo.Controllers
             _itemRepository = itemRepository;
         }
         
-        public void AddToCart(int cartId, int itemId, int quantity)
+        public void AddToCart(int cartId, int itemId, int quantityToAdd)
         {
+            var cart = _orderRepository.Get(cartId);
+            var item = _itemRepository.Get(itemId);
 
+            if (cart.Items.TryGetValue(item, out int quantityAlreadyInOrder))
+                cart.Items[item] = quantityAlreadyInOrder + quantityToAdd;
+            else
+                cart.Items.Add(item, quantityToAdd);
+
+            _orderRepository.Update(cart);
         }
 
-        public void RemoveFromCart(int cartId, int itemId, int quantity)
+        public void RemoveFromCart(int cartId, int itemId, int quantityToRemove)
         {
+            var cart = _orderRepository.Get(cartId);
+            var item = _itemRepository.Get(itemId);
 
+            if (cart.Items.TryGetValue(item, out int quantityAlreadyInOrder))
+            {
+                if (quantityAlreadyInOrder > quantityToRemove)
+                {
+                    cart.Items[item] = quantityAlreadyInOrder - quantityToRemove;
+                    _orderRepository.Update(cart);
+                }
+                else if (quantityAlreadyInOrder == quantityToRemove)
+                {
+                    cart.Items.Remove(item);
+                    _orderRepository.Update(cart);
+                }
+                else
+                    throw new TryingToRemoveTooManyItems($"Trying to remove {quantityToRemove} of item {itemId} from {cartId} but only {quantityAlreadyInOrder} in cart");
+            }
+            else
+                throw new TryingToRemoveTooManyItems($"Item with ID {itemId} is not in cart {cartId} at all");
         }
 
         public int CreateCart(int customerID)
@@ -40,6 +68,9 @@ namespace ShoppingCartDemo.Controllers
 
         public void ClearCart(int cartId)
         {
+            var cart = _orderRepository.Get(cartId);
+            cart.Items.Clear();
+            _orderRepository.Update(cart);
         }
     }
 }

@@ -11,13 +11,13 @@ namespace ShoppingCartDemo.Models
 
         public readonly Customer Customer;
 
-        public IEnumerable<Item> Items;
+        public Dictionary<Item, int> Items;
 
         public Order(Customer customer, int id)
         {
             Customer = customer;
             ID = id;
-            Items = new List<Item>();
+            Items = new Dictionary<Item, int>();
         }
     }
 }
