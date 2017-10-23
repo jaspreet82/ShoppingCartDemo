@@ -77,11 +77,5 @@ namespace ShoppingCartDemo.Controllers
             _orderRepository.Update(cart);
         }
 
-        [HttpGet]
-        public IEnumerable<Order> GetOrdersForCustomer(int customerID)
-        {
-            var customer = _customerRepository.Get(customerID);
-            return (_orderRepository.GetAllOrders(customer));
-        }
     }
 }

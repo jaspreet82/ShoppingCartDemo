@@ -14,7 +14,6 @@ namespace ShoppingCartDemo.Models
         void Update(Order order);
 
         Order Get(int orderID);
-
-        IEnumerable<Order> GetAllOrders(Customer customer);
     }
+
 }

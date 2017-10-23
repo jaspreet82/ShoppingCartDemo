@@ -41,6 +41,7 @@ namespace ShoppingCartDemo.Tests
                     throw new CartDoesNotExistException($"No cart matches ID {orderID}");
                 return order;
             }
+
         }
 
         private FakeOrderRepository _fakeRepository = new FakeOrderRepository();
@@ -150,10 +151,6 @@ namespace ShoppingCartDemo.Tests
             Assert.AreEqual(15, _fakeRepository.Orders.Single(o => o.ID == newCart2ID).Items[item2]);
             Assert.AreEqual(5, _fakeRepository.Orders.Single(o => o.ID == newCart3ID).Items[item1]);
         }
-
-        [TestMethod]
-        public void 
-
 
         [TestMethod, ExpectedException(typeof(CartDoesNotExistException))]
         public void RemoveItemFromCartThatIsntThere()
