@@ -21,7 +21,9 @@ namespace ShoppingCartDemo.Controllers
             _customerRepository = customerRepository;
             _itemRepository = itemRepository;
         }
-        
+
+        [HttpPost]
+        [Route("AddToCart/{cartId}/{itemId}/{quantityToAdd}")]
         public void AddToCart(int cartId, int itemId, int quantityToAdd)
         {
             var cart = _orderRepository.Get(cartId);
@@ -35,6 +37,8 @@ namespace ShoppingCartDemo.Controllers
             _orderRepository.Update(cart);
         }
 
+        [HttpPost]
+        [Route("RemoveFromCart/{cartId}/{itemId}/{quantityToRemove}")]
         public void RemoveFromCart(int cartId, int itemId, int quantityToRemove)
         {
             var cart = _orderRepository.Get(cartId);
@@ -59,6 +63,8 @@ namespace ShoppingCartDemo.Controllers
                 throw new TryingToRemoveTooManyItems($"Item with ID {itemId} is not in cart {cartId} at all");
         }
 
+        [HttpPost]
+        [Route("CreateCart/{customerID}")]
         public int CreateCart(int customerID)
         {
             var customer = _customerRepository.Get(customerID);
@@ -66,6 +72,8 @@ namespace ShoppingCartDemo.Controllers
             return order.ID;
         }
 
+        [HttpPost]
+        [Route("ClearCart/{cartId}")]
         public void ClearCart(int cartId)
         {
             var cart = _orderRepository.Get(cartId);
